@@ -42,6 +42,15 @@ const envSchema = z.object({
   SMTP_PASSWORD: z.string().default(''),
   SMTP_FROM: z.string().default('Matjari <no-reply@matjari.local>'),
 
+  // Public showcase instance: configure the platform, create the admin and re-seed the demo
+  // data on boot whenever the host's ephemeral disk has lost the images.
+  DEMO_MODE: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((v) => v === 'true'),
+  DEMO_ADMIN_EMAIL: z.string().default(''),
+  DEMO_ADMIN_PASSWORD: z.string().default(''),
+
   UPLOAD_DIR: z.string().default('uploads'),
   UPLOAD_MAX_BYTES: z.coerce.number().int().positive().default(5 * 1024 * 1024),
 });
