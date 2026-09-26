@@ -19,7 +19,8 @@
     "test": "npm run test -w @matjari/shared && npm run build -w @matjari/shared && npm run test -w @matjari/api",
     "make-admin": "npm run make-admin -w @matjari/api --",
     "db:reset": "npm run db:reset -w @matjari/api --",
-    "seed:sample": "npm run seed:sample -w @matjari/api"
+    "seed:sample": "npm run seed:sample -w @matjari/api",
+    "bootstrap:demo": "npm run bootstrap:demo -w @matjari/api --"
   },
   "engines": {
     "node": ">=22.13.0"

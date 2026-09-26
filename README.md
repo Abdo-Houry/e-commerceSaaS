@@ -200,18 +200,20 @@ cd e-commerceSaaS
 cp .env.example .env          # adjust DB_* if needed
 docker compose up -d          # optional: PostgreSQL 16 in Docker
 npm install                   # also builds packages/shared
-npm run migration:run         # creates the database if missing, then migrates
-npm run seed                  # showcase store at /s/demo
-npm run seed:sample           # a merchant with catalogue, orders and a pending request
+npm run bootstrap:demo -- --admin-email you@example.com --admin-password "strong-password"
 npm run dev                   # API on :4000 · web on :3000
 ```
+
+`bootstrap:demo` creates the database, runs the migrations, enables the three plans with
+placeholder payment details, seeds the showcase store plus a sample merchant with orders,
+and creates the admin account — one command from empty Postgres to a full demo.
 
 **Sample logins** (local only, created by the seed scripts):
 
 | Role | Email | Password |
 |---|---|---|
 | Merchant | `sample@matjari.app` | `sample12345` |
-| Platform admin | create your own: `npm run make-admin -- you@example.com --create --password "…"` | |
+| Platform admin | whatever you passed to `bootstrap:demo` (or `npm run make-admin -- you@example.com --create --password "…"`) | |
 
 ### Scripts
 
@@ -221,6 +223,7 @@ npm run dev                   # API on :4000 · web on :3000
 | `npm run typecheck` | Type-checks all three packages (including tests) |
 | `npm test` | 15 unit tests (shared) + 16 integration tests (API, real PostgreSQL) |
 | `npm run build` | Production build of all packages |
+| `npm run bootstrap:demo -- --admin-email … --admin-password …` | Empty database → migrations, plans, demo data, admin account |
 | `npm run seed` / `npm run seed:sample` | Showcase store / sample merchant with orders |
 | `npm run db:reset -- --yes` | Wipe all data (keeps platform settings), re-create the showcase store |
 | `npm run make-admin -- <email>` | Grant platform-admin rights (`--create --password` to create the account) |
@@ -265,9 +268,13 @@ docs/                    Architecture notes and screenshots
 
 The repository ships with a [`render.yaml`](render.yaml) blueprint (API + PostgreSQL) and works on Vercel for the web app.
 
-1. **Database + API → Render:** *New → Blueprint*, point it at this repo. Set `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET` and `REVALIDATE_SECRET` (any long random strings).
-2. **Web → Vercel:** import the repo, build command `npm run build -w @matjari/shared && npm run build -w @matjari/web`, output `frontend/.next`, and set `NEXT_PUBLIC_API_URL` to the Render API URL.
-3. Point `CORS_ORIGINS` and `WEB_PUBLIC_URL` on the API at the Vercel URL, then run the seed scripts once.
+1. **Database:** any managed PostgreSQL 16+ (Render, Neon, Supabase…). The API accepts a single
+   `DATABASE_URL`; add `DB_SSL=true` when the provider requires TLS.
+2. **API → Render:** *New → Blueprint*, point it at this repo. Set `JWT_ACCESS_SECRET`,
+   `JWT_REFRESH_SECRET` and `REVALIDATE_SECRET` (any long random strings).
+3. **Web → Vercel:** import the repo, build command `npm run build -w @matjari/shared && npm run build -w @matjari/web`, output `frontend/.next`, and set `NEXT_PUBLIC_API_URL` to the Render API URL.
+4. Point `CORS_ORIGINS` and `WEB_PUBLIC_URL` on the API at the Vercel URL, then seed the
+   database once: `DATABASE_URL=… DB_SSL=true npm run bootstrap:demo -- --admin-email … --admin-password …`
 
 Full variable reference: [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md).
 

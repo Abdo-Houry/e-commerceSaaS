@@ -16,7 +16,8 @@
     "test": "node --no-experimental-strip-types --require ts-node/register/transpile-only --require ./test/setup-env.ts --test --test-concurrency=1 test/*.test.ts",
     "make-admin": "ts-node --transpile-only src/scripts/make-admin.ts",
     "db:reset": "ts-node --transpile-only src/scripts/reset-db.ts",
-    "seed:sample": "ts-node --transpile-only src/scripts/seed-sample.ts"
+    "seed:sample": "ts-node --transpile-only src/scripts/seed-sample.ts",
+    "bootstrap:demo": "ts-node --transpile-only src/scripts/bootstrap-demo.ts"
   },
   "dependencies": {
     "@matjari/shared": "^0.1.0",
