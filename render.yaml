@@ -1,0 +1,41 @@
+# Render blueprint: PostgreSQL + the Express API.
+# The Next.js frontend is deployed separately on Vercel (see README → Deployment).
+databases:
+  - name: matjari-db
+    databaseName: matjari
+    user: matjari
+    plan: free
+
+services:
+  - type: web
+    name: matjari-api
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm ci && npm run build -w @matjari/shared && npm run build -w @matjari/api
+    startCommand: npm run migration:run -w @matjari/api && npm run start -w @matjari/api
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: matjari-db
+          property: connectionString
+      - key: DB_SSL
+        value: 'false'
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: REVALIDATE_SECRET
+        generateValue: true
+      - key: APP_TIMEZONE
+        value: Asia/Damascus
+      # Fill these in with the Vercel URL after the frontend is deployed.
+      - key: CORS_ORIGINS
+        sync: false
+      - key: WEB_PUBLIC_URL
+        sync: false
+      - key: API_PUBLIC_URL
+        sync: false

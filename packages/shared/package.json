@@ -1,0 +1,30 @@
+{
+  "name": "@matjari/shared",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/cjs/index.js",
+  "types": "dist/cjs/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.esm.json && node scripts-mark-esm.cjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json",
+    "test": "node --no-experimental-strip-types --require ts-node/register/transpile-only --test test/*.test.ts",
+    "dev": "tsc -p tsconfig.esm.json --watch --preserveWatchOutput",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\""
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.5",
+    "typescript": "~6.0.3"
+  },
+  "module": "dist/esm/index.js",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/cjs/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  }
+}

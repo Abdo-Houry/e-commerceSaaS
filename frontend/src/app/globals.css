@@ -1,0 +1,133 @@
+@import 'tailwindcss';
+
+/* Storefront template variants: same markup, layout switched by data-template on the store root. */
+@custom-variant tpl-classic (&:where([data-template='classic'] *));
+@custom-variant tpl-visual (&:where([data-template='visual'] *));
+@custom-variant tpl-catalog (&:where([data-template='catalog'] *));
+
+/* ─── Design tokens (Figma design system) ─────────────────────────── */
+@theme {
+  --font-sans: var(--font-cairo), system-ui, sans-serif;
+
+  --color-brand-50: #ecfdf5;
+  --color-brand-100: #d1fae5;
+  --color-brand-200: #a7f3d0;
+  --color-brand-400: #34d399;
+  --color-brand-500: #10b981;
+  --color-brand-600: #059669;
+  --color-brand-700: #047857;
+  --color-brand-900: #064e3b;
+
+  --color-accent-50: #fffbeb;
+  --color-accent-100: #fef3c7;
+  --color-accent-500: #f59e0b;
+  --color-accent-600: #d97706;
+
+  /* warm neutrals (stone) */
+  --color-n-0: #ffffff;
+  --color-n-50: #fafaf9;
+  --color-n-100: #f5f5f4;
+  --color-n-200: #e7e5e4;
+  --color-n-300: #d6d3d1;
+  --color-n-400: #a8a29e;
+  --color-n-500: #78716c;
+  --color-n-600: #57534e;
+  --color-n-700: #44403c;
+  --color-n-800: #292524;
+  --color-n-900: #1c1917;
+
+  --color-success: #16a34a;
+  --color-warning: #f59e0b;
+  --color-danger: #dc2626;
+  --color-info: #2563eb;
+  --color-whatsapp: #25d366;
+  --color-whatsapp-strong: #0f7f43;
+
+  /* order status badges */
+  --color-status-new-bg: #dbeafe;
+  --color-status-new-fg: #1d4ed8;
+  --color-status-preparing-bg: #fef3c7;
+  --color-status-preparing-fg: #b45309;
+  --color-status-shipped-bg: #e0e7ff;
+  --color-status-shipped-fg: #4338ca;
+  --color-status-delivered-bg: #d1fae5;
+  --color-status-delivered-fg: #047857;
+  --color-status-cancelled-bg: #fee2e2;
+  --color-status-cancelled-fg: #b91c1c;
+  --color-status-incomplete-bg: #f5f5f4;
+  --color-status-incomplete-fg: #57534e;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 999px;
+
+  /* type ramp: size / line-height */
+  --text-display: 40px;
+  --text-display--line-height: 52px;
+  --text-h1: 32px;
+  --text-h1--line-height: 42px;
+  --text-h2: 24px;
+  --text-h2--line-height: 34px;
+  --text-h3: 20px;
+  --text-h3--line-height: 30px;
+  --text-body-lg: 16px;
+  --text-body-lg--line-height: 24px;
+  --text-body: 16px;
+  --text-body--line-height: 28px;
+  --text-sm: 14px;
+  --text-sm--line-height: 24px;
+  --text-xs: 13px;
+  --text-xs--line-height: 20px;
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+}
+
+/* Merchant theme, injected per store as inline CSS variables. */
+@theme inline {
+  --color-store: var(--brand);
+  --color-store-strong: var(--brand-strong);
+  --color-store-soft: color-mix(in oklab, var(--brand) 10%, white);
+  --color-store-accent: var(--accent);
+  --color-store-on-accent: var(--accent-contrast);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-n-50 font-sans text-body text-n-900 antialiased;
+    overflow-x: hidden;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-600;
+  }
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Thin scrollbar for dark surfaces (storefront footer). */
+@utility scrollbar-dark {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 255 255 / 0.25) transparent;
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}

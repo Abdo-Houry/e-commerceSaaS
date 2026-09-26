@@ -1,0 +1,7 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "web", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev", "-w", "@matjari/web"], "port": 3000 },
+    { "name": "api", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev", "-w", "@matjari/api"], "port": 4000 }
+  ]
+}

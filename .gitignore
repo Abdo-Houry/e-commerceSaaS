@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.next/
+.env
+*.tsbuildinfo
+backend/uploads/*
+!backend/uploads/.gitkeep
+next-env.d.ts
+
+# Local editor/agent settings
+.claude/settings.local.json

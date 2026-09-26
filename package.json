@@ -1,0 +1,27 @@
+{
+  "name": "matjari",
+  "private": true,
+  "workspaces": [
+    "packages/shared",
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "postinstall": "npm run build -w @matjari/shared",
+    "dev": "node scripts/dev.mjs",
+    "dev:api": "npm run dev -w @matjari/api",
+    "dev:web": "npm run dev -w @matjari/web",
+    "build": "npm run build -w @matjari/shared && npm run build -w @matjari/api && npm run build -w @matjari/web",
+    "typecheck": "npm run build -w @matjari/shared && npm run typecheck -w @matjari/shared && npm run typecheck -w @matjari/api && npm run typecheck -w @matjari/web",
+    "migration:run": "npm run db:create -w @matjari/api && npm run migration:run -w @matjari/api",
+    "seed": "npm run seed -w @matjari/api",
+    "db:create": "npm run db:create -w @matjari/api",
+    "test": "npm run test -w @matjari/shared && npm run build -w @matjari/shared && npm run test -w @matjari/api",
+    "make-admin": "npm run make-admin -w @matjari/api --",
+    "db:reset": "npm run db:reset -w @matjari/api --",
+    "seed:sample": "npm run seed:sample -w @matjari/api"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  }
+}
