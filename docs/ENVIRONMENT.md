@@ -18,6 +18,9 @@ All variables live in a single `.env` at the repository root; both apps read it.
 | `JWT_REFRESH_SECRET` | API | Secret for 7-day refresh tokens (httpOnly cookie) |
 | `JWT_ACCESS_TTL` `JWT_REFRESH_TTL` | API | Token lifetimes (`15m`, `7d`) |
 | `SMTP_HOST` `SMTP_PORT` `SMTP_USER` `SMTP_PASSWORD` `SMTP_FROM` | API | Outgoing mail. With `SMTP_HOST` empty, password-reset links are printed to the API console |
+| `DB_SSL` | API | `true` when the database requires TLS (managed hosts) |
+| `DEMO_MODE` | API | `true` on a public showcase instance: on boot it writes demo plans and placeholder payment details (only while none are configured), creates the admin below as the single admin account, lifts any suspension on the demo stores, and re-seeds the showcase images when the host's ephemeral disk has lost them |
+| `DEMO_ADMIN_EMAIL` `DEMO_ADMIN_PASSWORD` | API | The demo instance's admin login, created on first boot |
 | `UPLOAD_DIR` | API | Folder for uploaded images, relative to `backend/` (default `uploads`) |
 | `UPLOAD_MAX_BYTES` | API | Max upload size (default 5 MB) |
 | `NEXT_PUBLIC_API_URL` | web | API base URL used by the browser (inlined at build time) |

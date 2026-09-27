@@ -273,19 +273,28 @@ docs/                    Architecture notes and screenshots
 
 ## 🌐 Deployment
 
-The repository ships with a [`render.yaml`](render.yaml) blueprint (API + PostgreSQL) and works on Vercel for the web app.
+The live demo runs on free tiers: **Neon** (PostgreSQL) plus two **Render** services, one for the
+API and one for the Next.js server. The repository ships a [`render.yaml`](render.yaml) blueprint
+for the API; the web app deploys the same way (or on Vercel, which needs no extra configuration).
 
-1. **Database:** any managed PostgreSQL 16+ (Render, Neon, Supabase…). The API accepts a single
-   `DATABASE_URL`; add `DB_SSL=true` when the provider requires TLS.
-2. **API → Render:** *New → Blueprint*, point it at this repo. Set `JWT_ACCESS_SECRET`,
-   `JWT_REFRESH_SECRET` and `REVALIDATE_SECRET` (any long random strings).
-3. **Web → Vercel:** import the repo, build command `npm run build -w @matjari/shared && npm run build -w @matjari/web`, output `frontend/.next`, and set `NEXT_PUBLIC_API_URL` to the Render API URL.
-4. Point `CORS_ORIGINS` and `WEB_PUBLIC_URL` on the API at the Vercel URL, then seed the
-   database once: `DATABASE_URL=… DB_SSL=true npm run bootstrap:demo -- --admin-email … --admin-password …`
+1. **Database:** any managed PostgreSQL 16+. The API takes a single `DATABASE_URL`, with
+   `DB_SSL=true` when the provider requires TLS.
+2. **API:** build `npm ci --include=dev && npm run build -w @matjari/shared && npm run build -w @matjari/api`,
+   start `npm run migrate -w @matjari/api && npm run start -w @matjari/api` — migrations run from
+   the compiled build, so the host needs no shell. Set `DATABASE_URL`, `JWT_ACCESS_SECRET`,
+   `JWT_REFRESH_SECRET` and `REVALIDATE_SECRET`.
+3. **Web:** build `npm ci --include=dev && npm run build -w @matjari/shared && npm run build -w @matjari/web`,
+   start `npm run start -w @matjari/web`, with `NEXT_PUBLIC_API_URL` pointing at the API
+   (it is inlined at build time, so a change needs a rebuild).
+4. Point `CORS_ORIGINS`, `WEB_PUBLIC_URL` and `API_PUBLIC_URL` on the API at the web URL, then
+   seed once with `npm run bootstrap:demo` — or set `DEMO_MODE=true` plus `DEMO_ADMIN_EMAIL` /
+   `DEMO_ADMIN_PASSWORD` and the API seeds itself on first boot.
 
 Full variable reference: [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md).
 
-> Uploaded images are written to the API's local disk. On free hosting tiers that disk is ephemeral — for production, point uploads at object storage (S3/R2).
+> Uploaded images are written to the API's local disk. On free hosting tiers that disk is ephemeral,
+> so `DEMO_MODE` re-seeds the showcase images whenever it finds them gone; for production, point
+> uploads at object storage (S3/R2).
 
 ---
 
