@@ -13,7 +13,7 @@ import { Store } from '../entities/Store';
 import { User } from '../entities/User';
 import { clearSettingsCache } from '../services/platform.service';
 import { seedDemo } from './seed-demo';
-import { seedSample } from './seed-sample';
+import { seedSample, SAMPLE_SLUG } from './seed-sample';
 
 /**
  * Plan prices are integer minor units (cents): $10 / $55 / $100.
@@ -49,17 +49,37 @@ export async function ensureDemoSettings(force = false): Promise<void> {
   console.log('Platform settings: 3 plans, placeholder payment details');
 }
 
-/** Creates the admin account if it is missing; never touches an existing one's password. */
-export async function ensureAdmin(email: string, password: string, reset = false): Promise<void> {
+/**
+ * Creates the admin account if it is missing.
+ * `resetPassword` also rewrites an existing account's password (the CLI bootstrap does).
+ * `soleAdmin` demotes every other admin, so a public demo has exactly one documented login.
+ */
+export async function ensureAdmin(
+  email: string,
+  password: string,
+  { resetPassword = false, soleAdmin = false }: { resetPassword?: boolean; soleAdmin?: boolean } = {},
+): Promise<void> {
   if (!email || !password) return;
   const repo = AppDataSource.getRepository(User);
+
+  if (soleAdmin) {
+    const { affected } = await repo
+      .createQueryBuilder()
+      .update()
+      .set({ role: 'merchant' })
+      .where('role = :role', { role: 'admin' })
+      .andWhere('email != :email', { email })
+      .execute();
+    if (affected) console.log(`Demoted ${affected} undocumented admin account(s).`);
+  }
+
   const existing = await repo.findOne({ where: { email } });
   const passwordHash = await bcrypt.hash(password, 12);
   if (!existing) {
     await repo.save(repo.create({ name: 'مدير المنصة', email, passwordHash, role: 'admin' }));
     console.log(`Admin account created: ${email}`);
-  } else if (reset || existing.role !== 'admin') {
-    await repo.update(existing.id, { role: 'admin', ...(reset ? { passwordHash } : {}) });
+  } else if (resetPassword || existing.role !== 'admin') {
+    await repo.update(existing.id, { role: 'admin', ...(resetPassword ? { passwordHash } : {}) });
     console.log(`Admin account updated: ${email}`);
   }
 }
@@ -89,9 +109,22 @@ export async function seedDemoDataIfMissing(): Promise<void> {
   console.log('Demo data restored.');
 }
 
+/** The demo's admin panel is open to visitors, so undo anything they suspended. */
+async function unsuspendDemoStores(): Promise<void> {
+  const { affected } = await AppDataSource.getRepository(Store)
+    .createQueryBuilder()
+    .update()
+    .set({ suspendedAt: null, suspensionReason: null })
+    .where('slug IN (:...slugs)', { slugs: [DEMO_STORE_SLUG, SAMPLE_SLUG] })
+    .andWhere('"suspendedAt" IS NOT NULL')
+    .execute();
+  if (affected) console.log('Demo stores un-suspended.');
+}
+
 /** Everything the public demo instance needs, run after the server starts listening. */
 export async function refreshDemoData(): Promise<void> {
   await ensureDemoSettings();
-  await ensureAdmin(env.DEMO_ADMIN_EMAIL, env.DEMO_ADMIN_PASSWORD);
+  await ensureAdmin(env.DEMO_ADMIN_EMAIL, env.DEMO_ADMIN_PASSWORD, { soleAdmin: true });
   await seedDemoDataIfMissing();
+  await unsuspendDemoStores();
 }

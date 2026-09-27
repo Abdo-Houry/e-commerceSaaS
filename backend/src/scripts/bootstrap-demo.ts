@@ -36,7 +36,7 @@ async function main() {
   await ensureDemoSettings(true);
   await seedDemo();
   await seedSample();
-  await ensureAdmin(adminEmail, adminPassword, true);
+  await ensureAdmin(adminEmail, adminPassword, { resetPassword: true });
 
   console.log('\n🎉 Ready');
   console.log(`   Admin:    ${adminEmail} / ${adminPassword}`);

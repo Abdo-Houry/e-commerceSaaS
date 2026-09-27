@@ -33,10 +33,17 @@ Off-the-shelf e-commerce platforms don't fit: they assume online card payments (
 
 ## 🌍 Live demo
 
-| | |
-|---|---|
-| **Platform** | _deployment link added after publishing_ |
-| **Demo storefront** | `/s/demo` — a seeded showcase store with a live template switcher |
+**https://matjari-3elt.onrender.com**
+
+| Try | Where | Sign in |
+|---|---|---|
+| **Storefront + WhatsApp checkout** | [/s/demo](https://matjari-3elt.onrender.com/s/demo) | — (best on a phone; the template switcher is live) |
+| **Merchant dashboard** | [/login](https://matjari-3elt.onrender.com/login) | `sample@matjari.app` / `sample12345` |
+| **Platform admin panel** | [/admin](https://matjari-3elt.onrender.com/admin) | `admin@matjari.app` / `matjari-demo-2026` |
+
+> Hosted on free tiers (Render + Neon): the first request after a quiet period wakes the
+> servers and can take up to a minute. Payment details on the subscription page are
+> placeholders, and the demo data restores itself on every restart — feel free to break things.
 
 > The demo storefront accepts cart actions but blocks checkout: it exists to show the customer experience, not to send real orders.
 

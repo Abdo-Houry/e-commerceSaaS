@@ -29,7 +29,7 @@ import * as zones from '../services/delivery-zone.service';
 
 export const SAMPLE_EMAIL = 'sample@matjari.app';
 export const SAMPLE_PASSWORD = 'sample12345';
-const SAMPLE_SLUG = 'yasmine';
+export const SAMPLE_SLUG = 'yasmine';
 const ASSETS = path.resolve(__dirname, '../../assets/demo');
 
 const CATALOG = [
